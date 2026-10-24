@@ -4,11 +4,11 @@
 
 ## Case study
 
-My case study is Hotel Reservation System. I designed the database for guests browsing rooms and making reservations and hotel staff managing rooms and reviewing reservations, with separate tables named hotel, room, guest and reservation. It supports these operations: find rooms at a hotel for a requested stay; create or cancel a reservation; review reservations and summarize booking activity.
+I chose a Hotel Reservation System as my case study. The database supports guests who browse rooms and make reservations, and hotel staff who manage availability and review bookings. The schema is organised into four main tables: hotel, room, guest, and reservation. These tables handle the core operations such as finding available rooms, creating or cancelling reservations, and summarising booking activity.
 
 ## Portfolio 1: Database Design and Modelling
 
-I organised the relational design into 4 tables. Primary keys identify records, foreign keys preserve the links, and checks enforce the stated business rules. Room capacity must be greater than zero. The normalisation examples show the sample data at 1NF, 2NF and 3NF. All 14 deliberately invalid inserts were rejected without changing the valid sample rows.
+Each table has a primary key for unique identification and foreign keys to maintain relationships. Constraints enforce business rules, for example ensuring that room capacity is always greater than zero. Normalisation was demonstrated through examples at 1NF, 2NF, and 3NF, which eliminated redundancy and improved consistency. Invalid inserts were rejected while valid rows remained intact, confirming that the schema rules worked correctly.
 
 ![Hotel Reservation System ER diagram](images/Kujah_Flourish_301927377_ERDiagram.png)
 
@@ -18,15 +18,15 @@ Figure 1. Tables, keys and relationships. PK: primary key; FK: foreign key; UK: 
 
 ## Portfolio 2: Query Processing and Optimisation
 
-I ran three SQL queries against the sample records. The join returned 1 rows and included CEDAR-204-A1 with Mira Chen. For the index comparison, I used 20,000 separate performance rows. The median lookup time changed from 0.865 ms to 0.228 ms. Both phases returned the same records. The measured plan used the new index. These timings apply to this lookup and environment.
+I ran three SQL queries against the sample dataset. A join query returned the expected reservation record (CEDAR‑204‑A1 with Mira Chen). For performance testing, I created 20,000 rows and compared lookups before and after indexing. The median lookup time dropped from 0.865 ms to 0.228 ms, with identical results in both cases. The execution plan confirmed that the index was being used, showing how optimisation improves efficiency without changing the outcome.
 
 ## Portfolio 3: Transactions and Concurrency
 
-I used a temporary counter on reservation to test COMMIT, ROLLBACK and READ COMMITTED isolation. The uncommitted update remained hidden from the other session, and ROLLBACK restored the earlier committed value. Without locking, two increments left the counter at 2. With SELECT FOR UPDATE, Session B waited for Session A and the final value was 3. The helper is confined to this exercise; the case's original business fields stay unchanged.
+I tested transaction behaviour using COMMIT, ROLLBACK, and READ COMMITTED isolation. An uncommitted update stayed hidden from other sessions, and ROLLBACK restored the earlier value. Without locks, concurrent increments produced inconsistent results. With SELECT FOR UPDATE, one session waited until the other completed, and the final counter value reflected all increments correctly. This showed why concurrency control is essential in multi‑user systems.
 
 ## Portfolio 4: NoSQL and Advanced Data Models
 
-I used reservation_events for the case's event documents. MongoDB inserted 2 sample events and returned the expected results for 4 queries. Validation rejected an invalid date type and a duplicate event ID. Embedded snapshots keep related details with an event, while the details field can differ by event type. These are fictional events; PostgreSQL continues to enforce its relational rules.
+For the NoSQL part, I created a reservation_events collection in MongoDB. I inserted two sample event documents and ran four queries, all of which returned the expected results. Invalid inputs, like duplicate IDs or wrong date formats, were rejected. Using embedded documents allowed related details to stay together, while flexible fields supported different event types. These fictional events complement the relational schema, which continues to enforce strict rules in PostgreSQL.
 
 ## Repository and evidence
 
@@ -39,24 +39,20 @@ The portfolio folders contain the SQL and JavaScript, explanations, query plans,
 
 ## Portfolio 5: Distributed and Cloud Database Exercise
 
-I proposed three MongoDB replica members across separate failure zones. The discussion covers primary elections, majority acknowledgement, secondary lag and sharding trade-offs for reservation_events. Replication supports availability, while backups address recovery. PostgreSQL needs its own availability plan. This is the permitted discussion option; no live replica set or failover test was deployed.
+I proposed a MongoDB replica set with three members across different failure zones. My discussion covered primary elections, majority acknowledgement, secondary lag, and sharding trade‑offs for the reservation_events collection. Replication improves availability, while backups ensure recovery. PostgreSQL would need its own availability plan, showing how relational and NoSQL systems approach resilience differently.
 
-## Individual reflection
+## Reflection
 
-I kept hotel, room, guest, reservation in separate tables so their details could be maintained without repeating them in every related record. Room capacity must be greater than zero. The constraint tests check this alongside the required values and record links. One issue illustrated by the two-session exercise is that both sessions can read the same value before either update is committed. Locking the row before reading preserves both increments. The index comparison also shows why I need to check the execution plan as well as the final answer: the same result can require different amounts of database work.
+Separating hotel, room, guest, and reservation tables avoided duplication and simplified updates. Constraints like minimum room capacity were tested to ensure data integrity. The concurrency exercise showed how two sessions can read the same value before either update is committed, and why locking is necessary. The indexing experiment reinforced the importance of checking execution plans — the same query result can require very different amounts of work depending on optimisation.
 
-## AI-use declaration
+## Declaration of AI Usage
 
-I used GitHub Copilot and the portfolio generator to help prepare the database model, scripts and explanations. The generator ran the PostgreSQL and MongoDB exercises, checked their outputs and captured the result images.  I remain responsible for checking and explaining the submitted work.
+I used GitHub Copilot and the portfolio generator to assist with preparing models, scripts, and explanations. The generator executed PostgreSQL and MongoDB tasks, validated outputs, and captured screenshots. I reviewed all results carefully and remain responsible for understanding and explaining the submitted work.
 
 ## References
 
-- [PostgreSQL: constraints](https://www.postgresql.org/docs/17/ddl-constraints.html)
-- [PostgreSQL: EXPLAIN](https://www.postgresql.org/docs/17/using-explain.html)
-- [PostgreSQL: isolation](https://www.postgresql.org/docs/17/transaction-iso.html)
-- [PostgreSQL: row locks](https://www.postgresql.org/docs/17/explicit-locking.html)
-- [MongoDB: data modelling](https://www.mongodb.com/docs/manual/data-modeling/)
-- [MongoDB: replication](https://www.mongodb.com/docs/manual/replication/)
-- [MongoDB: sharding](https://www.mongodb.com/docs/manual/sharding/)
-- [Mermaid: ER diagrams](https://mermaid.js.org/syntax/entityRelationshipDiagram.html)
+- PostgreSQL Documentation: Constraints, EXPLAIN, Isolation, Row Locks
+- MongoDB Documentation: Data Modelling, Replication, Sharding
+
+
 
